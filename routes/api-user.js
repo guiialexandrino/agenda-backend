@@ -5,7 +5,7 @@ const auth = require('../controllers/authController');
 
 router.get('/viewContacts', auth.auth, apiUserController.viewContacts);
 router.post('/addContact', auth.auth, apiUserController.addContact);
-router.put('/editContact', auth.auth, apiUserController.editContact);
+router.put('/editContact/:id', auth.auth, apiUserController.editContact);
 router.delete('/deleteContact/:id', auth.auth, apiUserController.removeContact);
 
 module.exports = router;

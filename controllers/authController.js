@@ -7,8 +7,8 @@ async function auth(req, res, next) {
 
   try {
     const userVerified = jwt.verify(token, process.env.TOKEN_SECRET);
-    const checkUser = await User.findOne({ _id: userVerified.id });
 
+    const checkUser = await User.findOne({ _id: userVerified.id });
     if (token !== checkUser.authKey)
       return res
         .status(401)

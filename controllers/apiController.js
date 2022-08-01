@@ -23,7 +23,10 @@ async function addContact(req, res) {
     if (checkNumber)
       return res
         .status(400)
-        .send({ success: false, error: 'Já tem esse número na agenda!' });
+        .send({
+          success: false,
+          error: 'Já tem um contato com esse número na agenda!',
+        });
 
     const newContact = new Contacts({ ...req.body, author: req.user.id });
     const savedContact = await newContact.save();
@@ -36,8 +39,21 @@ async function addContact(req, res) {
 
 async function editContact(req, res) {
   try {
+    const checkNumber = await Contacts.findOne({
+      number: req.body.number,
+      author: req.user.id,
+    });
+
+    if (checkNumber)
+      return res
+        .status(400)
+        .send({
+          success: false,
+          error: 'Já tem um contato com esse número na agenda!',
+        });
+
     const editedContact = await Contacts.findByIdAndUpdate(
-      req.body.id,
+      req.params.id,
       {
         name: req.body.name,
         number: req.body.number,
