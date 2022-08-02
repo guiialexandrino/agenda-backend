@@ -73,7 +73,7 @@ async function removeContact(req, res) {
     if (!checkOwner)
       return res.send({
         success: false,
-        error: 'Você não pode deletar esse contato.',
+        error: 'Não foi possível deletar esse contato.',
       });
 
     const removedContact = await Contacts.findByIdAndDelete(req.params.id);
