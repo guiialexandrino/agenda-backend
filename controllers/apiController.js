@@ -37,22 +37,21 @@ async function addContact(req, res) {
 
 async function editContact(req, res) {
   try {
-    const checkNumber = await Contacts.findOne({
-      number: req.body.number,
+    const checkOwner = await Contacts.findOne({
+      _id: req.params.id,
       author: req.user.id,
     });
 
-    if (checkNumber)
-      return res.status(400).send({
+    if (!checkOwner)
+      return res.send({
         success: false,
-        error: 'Já tem um contato com esse número na agenda!',
+        error: 'Você nao pode editar esse contato.',
       });
 
     const editedContact = await Contacts.findByIdAndUpdate(
       req.params.id,
       {
-        name: req.body.name,
-        number: req.body.number,
+        ...req.body,
         modifiedAt: Date.now(),
       },
       { new: true },
@@ -66,6 +65,17 @@ async function editContact(req, res) {
 
 async function removeContact(req, res) {
   try {
+    const checkOwner = await Contacts.findOne({
+      _id: req.params.id,
+      author: req.user.id,
+    });
+
+    if (!checkOwner)
+      return res.send({
+        success: false,
+        error: 'Você não pode deletar esse contato.',
+      });
+
     const removedContact = await Contacts.findByIdAndDelete(req.params.id);
     if (removedContact) res.send({ success: true, removed: removedContact });
     else
