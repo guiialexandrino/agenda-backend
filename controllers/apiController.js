@@ -21,12 +21,10 @@ async function addContact(req, res) {
     });
 
     if (checkNumber)
-      return res
-        .status(400)
-        .send({
-          success: false,
-          error: 'Já tem um contato com esse número na agenda!',
-        });
+      return res.status(400).send({
+        success: false,
+        error: 'Já tem um contato com esse número na agenda!',
+      });
 
     const newContact = new Contacts({ ...req.body, author: req.user.id });
     const savedContact = await newContact.save();
@@ -45,12 +43,10 @@ async function editContact(req, res) {
     });
 
     if (checkNumber)
-      return res
-        .status(400)
-        .send({
-          success: false,
-          error: 'Já tem um contato com esse número na agenda!',
-        });
+      return res.status(400).send({
+        success: false,
+        error: 'Já tem um contato com esse número na agenda!',
+      });
 
     const editedContact = await Contacts.findByIdAndUpdate(
       req.params.id,
@@ -72,6 +68,11 @@ async function removeContact(req, res) {
   try {
     const removedContact = await Contacts.findByIdAndDelete(req.params.id);
     if (removedContact) res.send({ success: true, removed: removedContact });
+    else
+      res.send({
+        success: false,
+        error: 'Contato com id não encontrado, não foi possível deletar.',
+      });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
