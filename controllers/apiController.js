@@ -1,4 +1,6 @@
 const Contacts = require('../models/Contacts');
+const Users = require('../models/User');
+const bcrypt = require('bcryptjs');
 
 //show Contacts by logged User
 async function viewContacts(req, res) {
@@ -76,27 +78,78 @@ async function editContact(req, res) {
 
 async function removeContact(req, res) {
   try {
+    const checkContact = await Contacts.findOne({
+      _id: req.params.id,
+    });
+
+    if (!checkContact)
+      return res.status(404).send({
+        success: false,
+        error: 'Contato com id não encontrado, não foi possível deletar.',
+      });
+
     const checkOwner = await Contacts.findOne({
       _id: req.params.id,
       author: req.user.id,
     });
 
     if (!checkOwner)
-      return res.send({
+      return res.status(401).send({
         success: false,
-        error: 'Não foi possível deletar esse contato.',
+        error: 'Você não ter permissão para deletar esse contato.',
       });
 
     const removedContact = await Contacts.findByIdAndDelete(req.params.id);
-    if (removedContact) res.send({ success: true, removed: removedContact });
-    else
-      res.send({
-        success: false,
-        error: 'Contato com id não encontrado, não foi possível deletar.',
-      });
+    res.send({ success: true, removed: removedContact });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
 }
 
-module.exports = { addContact, editContact, removeContact, viewContacts };
+async function editProfile(req, res) {
+  const expectedBody = ['name', 'password', 'email'];
+  for (let i in req.body) {
+    if (!expectedBody.includes(i)) {
+      return res.status(400).send({
+        success: false,
+        error: 'Os campos esperados no body são: name, password e email.',
+      });
+    }
+  }
+
+  try {
+    const checkEmail = await Users.findOne({
+      email: req.body.email,
+    });
+
+    if (checkEmail)
+      return res.status(400).send({
+        success: false,
+        error: 'Esse e-mail já está sendo utilizado.',
+      });
+
+    if (req.body.password)
+      req.body.password = bcrypt.hashSync(req.body.password);
+
+    const editedProfile = await Users.findByIdAndUpdate(
+      req.user.id,
+      {
+        ...req.body,
+        profileEditedAt: Date.now(),
+      },
+      { new: true }
+    );
+
+    if (editedProfile) res.send({ success: true, data: editedProfile });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
+module.exports = {
+  addContact,
+  editContact,
+  removeContact,
+  viewContacts,
+  editProfile,
+};

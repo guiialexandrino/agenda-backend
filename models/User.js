@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   lastLoginAt: { type: Date },
   authKey: { type: String },
+  profileEditedAt: { type: Date },
 });
 
 userSchema.methods.toJSON = function () {
@@ -19,6 +20,7 @@ userSchema.methods.toJSON = function () {
     createdAt: this.createdAt,
     lastLoginAt: this.lastLoginAt,
     authKey: this.authKey,
+    profileEditedAt: this.profileEditedAt,
   };
 };
 

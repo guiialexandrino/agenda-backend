@@ -33,7 +33,7 @@ async function login(req, res) {
 
     const passwordAndUserMatch = bcrypt.compareSync(
       req.body.password,
-      checkUser.password,
+      checkUser.password
     );
 
     if (!passwordAndUserMatch)
@@ -48,7 +48,7 @@ async function login(req, res) {
         email: checkUser.email,
       },
       process.env.TOKEN_SECRET,
-      { expiresIn: 3600 },
+      { expiresIn: 3600 }
     );
 
     res.header('authorization-token', token);
@@ -59,7 +59,7 @@ async function login(req, res) {
         authKey: token,
         lastLoginAt: Date.now(),
       },
-      { new: true },
+      { new: true }
     );
 
     res.send({

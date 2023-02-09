@@ -17,7 +17,6 @@ async function auth(req, res, next) {
     req.user = userVerified;
     next();
   } catch (error) {
-    console.log(error);
     res.status(401).send('Acesso negado: authorization-token inválida.');
   }
 }
