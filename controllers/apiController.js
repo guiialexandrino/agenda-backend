@@ -146,10 +146,29 @@ async function editProfile(req, res) {
   }
 }
 
+async function uploadAvatar(req, res) {
+  try {
+    const imagePath = req.file?.filename; //só vai acessar o .filename caso exista
+    const editedProfile = await Users.findByIdAndUpdate(
+      req.user.id,
+      {
+        avatar: imagePath,
+        profileEditedAt: Date.now(),
+      },
+      { new: true }
+    );
+
+    if (editedProfile) res.send({ success: true, data: editedProfile });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
 module.exports = {
   addContact,
   editContact,
   removeContact,
   viewContacts,
   editProfile,
+  uploadAvatar,
 };

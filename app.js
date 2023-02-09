@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('node:path');
 const express = require('express');
 const app = express();
 const apiEnter = require('./routes/enter.js');
@@ -25,6 +26,7 @@ app.use(express.json());
 
 app.use('/enter', apiEnter);
 app.use('/api', apiUser);
+app.use('/uploads', express.static(path.resolve(__dirname, '.', 'uploads')));
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor rodando na porta: ${process.env.PORT}`);
