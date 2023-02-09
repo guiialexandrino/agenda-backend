@@ -2,8 +2,8 @@ require('dotenv').config();
 const path = require('node:path');
 const express = require('express');
 const app = express();
-const apiEnter = require('../routes/enter.js');
-const apiUser = require('../routes/api-user.js');
+const apiEnter = require('./routes/enter.js');
+const apiUser = require('./routes/api-user.js');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
