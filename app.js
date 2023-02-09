@@ -6,6 +6,7 @@ const apiUser = require('./routes/api-user.js');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+mongoose.set('strictQuery', true);
 mongoose.connect(
   process.env.MONGO_CONNECTION_URL,
   {
@@ -15,7 +16,7 @@ mongoose.connect(
   (error) => {
     if (error) console.log(error);
     else console.log('Banco carregado...');
-  },
+  }
 );
 
 app.use(cors({ exposedHeaders: ['authorization-token'] }));
