@@ -7,10 +7,10 @@ function generateToken(user) {
       email: user.email,
     },
     process.env.TOKEN_SECRET,
-    { expiresIn: 3600 },
+    { expiresIn: 3600 }
   );
 
   return token;
 }
 
-module.exports = { generateToken };
+module.exports = generateToken;

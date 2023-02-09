@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const generateToken = require('../utils/jwt');
 
 async function register(req, res) {
   const user = new User({
@@ -42,14 +43,7 @@ async function login(req, res) {
         .send({ success: false, error: 'Email e/ou senha incorretos.' });
 
     //gera o token que é passado via header
-    const token = jwt.sign(
-      {
-        id: checkUser._id,
-        email: checkUser.email,
-      },
-      process.env.TOKEN_SECRET,
-      { expiresIn: 3600 }
-    );
+    const token = generateToken(checkUser);
 
     res.header('authorization-token', token);
 
