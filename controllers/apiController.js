@@ -26,6 +26,17 @@ async function addContact(req, res) {
         error: 'Já tem um contato com esse número na agenda!',
       });
 
+    const checkEmail = await Contacts.findOne({
+      email: req.body.email,
+      author: req.user.id,
+    });
+
+    if (checkEmail)
+      return res.status(400).send({
+        success: false,
+        error: 'Já tem um contato com esse email na agenda!',
+      });
+
     const newContact = new Contacts({ ...req.body, author: req.user.id });
     const savedContact = await newContact.save();
 
@@ -54,7 +65,7 @@ async function editContact(req, res) {
         ...req.body,
         modifiedAt: Date.now(),
       },
-      { new: true },
+      { new: true }
     );
 
     if (editedContact) res.send({ success: true, data: editedContact });
