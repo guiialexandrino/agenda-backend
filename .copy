@@ -1,4 +1,4 @@
 # Renomeie esse arquivo para .env
 PORT = 3333
-MONGO_CONNECTION_URL = mongodb://localhost/agenda
+MONGO_CONNECTION_URL = mongodb://127.0.0.1/agenda
 TOKEN_SECRET = "Seutokensecreto"
