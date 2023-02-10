@@ -71,11 +71,11 @@ async function lostPassword(req, res) {
         .status(400)
         .send({ success: false, error: 'Esse email não está cadastrado!' });
 
-    await nodemailer(
-      'Recuperar a senha ok?',
-      'Recuperação de Senha',
-      req.body.email
-    );
+    // await nodemailer(
+    //   'Recuperar a senha ok?',
+    //   'Recuperação de Senha',
+    //   req.body.email
+    // );
 
     return res.status(200).send({ sucess: true, user: checkUser.email });
   } catch (error) {
