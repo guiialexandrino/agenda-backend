@@ -3,8 +3,13 @@ const bcrypt = require('bcryptjs');
 const generateTokenJwt = require('../utils/jwt');
 const nodemailer = require('../utils/nodemailer');
 const speakeasy = require('speakeasy');
+const Validation = require('./validation/enter');
 
 async function register(req, res) {
+  const { error } = Validation.register(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   const user = new User({
     name: req.body.name,
     email: req.body.email,
@@ -26,6 +31,10 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
+  const { error } = Validation.login(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   try {
     const checkUser = await User.findOne({ email: req.body.email });
     if (!checkUser)
@@ -65,6 +74,10 @@ async function login(req, res) {
 }
 
 async function lostPassword(req, res) {
+  const { error } = Validation.lostPassword(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   try {
     const checkUser = await User.findOne({ email: req.body.email });
     if (!checkUser)
@@ -127,6 +140,10 @@ async function checkSecret(req, res) {
 }
 
 async function validateToken(req, res, next) {
+  const { error } = Validation.validateToken(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   try {
     const path = req.route.path;
     const { id, token } = req.body;
@@ -160,6 +177,10 @@ async function validateToken(req, res, next) {
 }
 
 async function newPassword(req, res) {
+  const { error } = Validation.newPassword(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   try {
     if (!req.body.password)
       return res
