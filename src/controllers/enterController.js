@@ -182,11 +182,6 @@ async function newPassword(req, res) {
     return res.status(400).send({ success: false, error: error.message });
 
   try {
-    if (!req.body.password)
-      return res
-        .status(400)
-        .send({ success: false, message: 'Não foi passada uma nova senha!' });
-
     const newPass = bcrypt.hashSync(req.body.password);
 
     const editedUser = await User.findByIdAndUpdate(
