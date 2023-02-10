@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const generateToken = require('../utils/jwt');
+const nodemailer = require('../utils/nodemailer');
 
 async function register(req, res) {
   const user = new User({
@@ -63,4 +63,24 @@ async function login(req, res) {
   } catch (error) {}
 }
 
-module.exports = { register, login };
+async function lostPassword(req, res) {
+  try {
+    const checkUser = await User.findOne({ email: req.body.email });
+    if (!checkUser)
+      return res
+        .status(400)
+        .send({ success: false, error: 'Esse email não está cadastrado!' });
+
+    await nodemailer(
+      'Recuperar a senha ok?',
+      'Recuperação de Senha',
+      req.body.email
+    );
+
+    return res.status(200).send({ sucess: true, user: checkUser.email });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
+module.exports = { register, login, lostPassword };
