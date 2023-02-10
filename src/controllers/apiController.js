@@ -147,6 +147,9 @@ async function editProfile(req, res) {
 }
 
 async function uploadAvatar(req, res) {
+  if (req.denied)
+    return res.status(400).send({ success: false, message: req.denied });
+
   try {
     const imagePath = req.file?.filename; //só vai acessar o .filename caso exista
     const editedProfile = await Users.findByIdAndUpdate(
