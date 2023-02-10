@@ -88,7 +88,7 @@ async function lostPassword(req, res) {
       window: 0,
     });
 
-    console.log(token);
+    // console.log(token);
 
     const urlAcess = `${process.env.URL_CLIENTSIDE}/recovery/${checkUser._id}`;
 
