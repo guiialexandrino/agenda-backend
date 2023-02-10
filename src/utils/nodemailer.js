@@ -15,12 +15,13 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendEmail(msgContent, subject, msgTo) {
-  await transporter.sendMail({
+  const send = await transporter.sendMail({
     html: msgContent,
     subject: subject,
     from: `Recuperar Senha - App Agenda<${process.env.EMAIL_USER}>`,
     to: [msgTo],
   });
+  return send;
 }
 
 module.exports = sendEmail;

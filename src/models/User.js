@@ -6,9 +6,10 @@ const userSchema = mongoose.Schema({
   email: { type: String, required: true, minlength: 3, maxlength: 100 },
   password: { type: String, required: true, minlength: 6, maxlength: 100 },
   createdAt: { type: Date, default: Date.now },
+  profileEditedAt: { type: Date },
   lastLoginAt: { type: Date },
   authKey: { type: String },
-  profileEditedAt: { type: Date },
+  secretKey: { type: String },
 });
 
 userSchema.methods.toJSON = function () {

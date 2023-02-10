@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/jwt');
 const nodemailer = require('../utils/nodemailer');
+const speakeasy = require('speakeasy');
 
 async function register(req, res) {
   const user = new User({
@@ -71,13 +72,44 @@ async function lostPassword(req, res) {
         .status(400)
         .send({ success: false, error: 'Esse email não está cadastrado!' });
 
-    // await nodemailer(
-    //   'Recuperar a senha ok?',
-    //   'Recuperação de Senha',
-    //   req.body.email
-    // );
+    const secret = speakeasy.generateSecret({ length: 20 });
 
-    return res.status(200).send({ sucess: true, user: checkUser.email });
+    // Save SecretKey in User
+    await User.updateOne(
+      { email: req.body.email },
+      { secretKey: secret.base32 }
+    );
+
+    //Create Token
+    const token = speakeasy.totp({
+      secret: secret.base32,
+      encoding: 'base32',
+      step: 600, // 10min duração
+      window: 0,
+    });
+
+    const urlAcess = `${process.env.URL_CLIENTSIDE}/recovery/${checkUser._id}`;
+
+    const emailMessage = `<h2>Instruções para gerar uma nova senha.</h2><p>Acesse o link abaixo e digite o token.</p><a href="${urlAcess}">${urlAcess}</a><h2>Token: ${token}</h2>`;
+
+    const sendEmail = await nodemailer(
+      emailMessage,
+      'Recuperação de Senha',
+      req.body.email
+    );
+
+    if (sendEmail.accepted.length === 0)
+      return res.status(400).send({
+        sucess: false,
+        message: 'Não foi possível enviar o email para recuperar a senha.',
+      });
+
+    return res
+      .status(200)
+      .send({
+        sucess: true,
+        message: 'Email para recuperar a senha foi enviado.',
+      });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
