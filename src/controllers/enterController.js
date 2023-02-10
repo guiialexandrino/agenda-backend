@@ -104,15 +104,93 @@ async function lostPassword(req, res) {
         message: 'Não foi possível enviar o email para recuperar a senha.',
       });
 
-    return res
-      .status(200)
-      .send({
-        sucess: true,
-        message: 'Email para recuperar a senha foi enviado.',
-      });
+    return res.status(200).send({
+      sucess: true,
+      message: 'Email para recuperar a senha foi enviado.',
+    });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
 }
 
-module.exports = { register, login, lostPassword };
+async function checkSecret(req, res) {
+  try {
+    const user = await User.findOne({ _id: req.params.idUser });
+
+    if (user.secretKey) return res.status(200).send({ secretKey: true });
+    else return res.status(200).send({ secretKey: false });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
+async function validateToken(req, res, next) {
+  try {
+    const path = req.route.path;
+    const { id, token } = req.body;
+    const user = await User.findOne({ _id: id });
+
+    if (!user.secretKey)
+      return res.status(401).send({
+        success: false,
+        message: 'Esse usuário não pediu para recuperar a senha.',
+      });
+
+    const validate = speakeasy.totp.verify({
+      secret: user.secretKey,
+      encoding: 'base32',
+      token: token,
+      step: 600,
+      window: 0,
+    });
+
+    console.log(validate, 'valido?');
+
+    if (!validate)
+      return res.status(401).send({
+        success: false,
+        message: 'Token inválido!',
+      });
+
+    if (path === '/validateToken') res.status(200).send({ success: true });
+    next();
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
+async function newPassword(req, res) {
+  try {
+    if (!req.body.password)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Não foi passada uma nova senha!' });
+
+    const newPass = bcrypt.hashSync(req.body.password);
+
+    const editedUser = await User.findByIdAndUpdate(
+      req.body.id,
+      {
+        password: newPass,
+        secretKey: '',
+        profileEditedAt: Date.now(),
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .send({ success: true, message: 'Senha alterada!', user: editedUser });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  lostPassword,
+  checkSecret,
+  validateToken,
+  newPassword,
+};
