@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-const generateToken = require('../utils/jwt');
+const generateTokenJwt = require('../utils/jwt');
 const nodemailer = require('../utils/nodemailer');
 const speakeasy = require('speakeasy');
 
@@ -44,7 +44,7 @@ async function login(req, res) {
         .send({ success: false, error: 'Email e/ou senha incorretos.' });
 
     //gera o token que é passado via header
-    const token = generateToken(checkUser);
+    const token = generateTokenJwt(checkUser);
 
     res.header('authorization-token', token);
 
