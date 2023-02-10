@@ -88,6 +88,8 @@ async function lostPassword(req, res) {
       window: 0,
     });
 
+    console.log(token);
+
     const urlAcess = `${process.env.URL_CLIENTSIDE}/recovery/${checkUser._id}`;
 
     const emailMessage = `<h2>Instruções para gerar uma nova senha.</h2><p>Acesse o link abaixo e digite o token.</p><a href="${urlAcess}">${urlAcess}</a><h2>Token: ${token}</h2>`;
@@ -143,8 +145,6 @@ async function validateToken(req, res, next) {
       step: 600,
       window: 0,
     });
-
-    console.log(validate, 'valido?');
 
     if (!validate)
       return res.status(401).send({
