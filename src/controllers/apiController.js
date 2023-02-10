@@ -1,6 +1,7 @@
 const Contacts = require('../models/Contacts');
 const Users = require('../models/User');
 const bcrypt = require('bcryptjs');
+const Validation = require('./validation/api');
 
 //show Contacts by logged User
 async function viewContacts(req, res) {
@@ -16,6 +17,10 @@ async function viewContacts(req, res) {
 }
 
 async function addContact(req, res) {
+  const { error } = Validation.addContact(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   try {
     const checkNumber = await Contacts.findOne({
       number: req.body.number,
@@ -49,6 +54,10 @@ async function addContact(req, res) {
 }
 
 async function editContact(req, res) {
+  const { error } = Validation.editContact({ ...req.params, ...req.body });
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
+
   try {
     const checkOwner = await Contacts.findOne({
       _id: req.params.id,
@@ -58,7 +67,7 @@ async function editContact(req, res) {
     if (!checkOwner)
       return res.send({
         success: false,
-        error: 'Você nao pode editar esse contato.',
+        error: 'Você não pode editar esse contato!',
       });
 
     const editedContact = await Contacts.findByIdAndUpdate(
@@ -72,7 +81,9 @@ async function editContact(req, res) {
 
     if (editedContact) res.send({ success: true, data: editedContact });
   } catch (error) {
-    res.status(400).send({ success: false, error: error });
+    res
+      .status(400)
+      .send({ success: false, error: 'Id do contato é inválido!' });
   }
 }
 
@@ -102,20 +113,16 @@ async function removeContact(req, res) {
     const removedContact = await Contacts.findByIdAndDelete(req.params.id);
     res.send({ success: true, removed: removedContact });
   } catch (error) {
-    res.status(400).send({ success: false, error: error });
+    res
+      .status(400)
+      .send({ success: false, error: 'Id do contato é inválido!' });
   }
 }
 
 async function editProfile(req, res) {
-  const expectedBody = ['name', 'password', 'email'];
-  for (let i in req.body) {
-    if (!expectedBody.includes(i)) {
-      return res.status(400).send({
-        success: false,
-        error: 'Os campos esperados no body são: name, password e email.',
-      });
-    }
-  }
+  const { error } = Validation.editProfile(req.body);
+  if (error)
+    return res.status(400).send({ success: false, error: error.message });
 
   try {
     const checkEmail = await Users.findOne({
