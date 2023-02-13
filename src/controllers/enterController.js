@@ -66,7 +66,7 @@ async function login(req, res) {
       { new: true }
     );
 
-    res.send({
+    res.status(200).send({
       success: true,
       data: updateUser,
     });
