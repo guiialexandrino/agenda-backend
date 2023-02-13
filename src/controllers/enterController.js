@@ -24,7 +24,7 @@ async function register(req, res) {
         .send({ success: false, error: 'Email já cadastrado.' });
     }
     const savedUser = await user.save();
-    res.send({ success: true, savedUser });
+    res.send({ success: true, data: savedUser });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -68,7 +68,7 @@ async function login(req, res) {
 
     res.status(200).send({
       success: true,
-      updateUser,
+      data: updateUser,
     });
   } catch (error) {}
 }
@@ -115,12 +115,12 @@ async function lostPassword(req, res) {
 
     if (sendEmail.accepted.length === 0)
       return res.status(400).send({
-        success: false,
+        sucess: false,
         message: 'Não foi possível enviar o email para recuperar a senha.',
       });
 
     return res.status(200).send({
-      success: true,
+      sucess: true,
       message: 'Email para recuperar a senha foi enviado.',
     });
   } catch (error) {
