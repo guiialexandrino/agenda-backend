@@ -10,7 +10,7 @@ async function viewContacts(req, res) {
       author: req.user.id,
     });
 
-    res.send({ success: true, data: checkContacts });
+    res.send({ success: true, checkContacts });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
@@ -47,7 +47,7 @@ async function addContact(req, res) {
     const newContact = new Contacts({ ...req.body, author: req.user.id });
     const savedContact = await newContact.save();
 
-    if (savedContact) res.send({ success: true, data: savedContact });
+    if (savedContact) res.send({ success: true, savedContact });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
@@ -79,7 +79,7 @@ async function editContact(req, res) {
       { new: true }
     );
 
-    if (editedContact) res.send({ success: true, data: editedContact });
+    if (editedContact) res.send({ success: true, editedContact });
   } catch (error) {
     res
       .status(400)
@@ -147,7 +147,7 @@ async function editProfile(req, res) {
       { new: true }
     );
 
-    if (editedProfile) res.send({ success: true, data: editedProfile });
+    if (editedProfile) res.send({ success: true, editedProfile });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
@@ -168,7 +168,7 @@ async function uploadAvatar(req, res) {
       { new: true }
     );
 
-    if (editedProfile) res.send({ success: true, data: editedProfile });
+    if (editedProfile) res.send({ success: true, editedProfile });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
