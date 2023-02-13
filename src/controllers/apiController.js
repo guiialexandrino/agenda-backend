@@ -47,7 +47,8 @@ async function addContact(req, res) {
     const newContact = new Contacts({ ...req.body, author: req.user.id });
     const savedContact = await newContact.save();
 
-    if (savedContact) res.send({ success: true, data: savedContact });
+    if (savedContact)
+      res.status(200).send({ success: true, data: savedContact });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
