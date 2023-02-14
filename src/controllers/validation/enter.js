@@ -81,12 +81,6 @@ function validateToken(data) {
       .error((error) => {
         return errorMessage('Token', error);
       }),
-    password: Joi.string()
-      .min(6)
-      .max(100)
-      .error((error) => {
-        return errorMessage('Senha', error);
-      }),
   });
 
   return schema.validate(data);
