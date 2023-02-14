@@ -15,5 +15,6 @@ router.put(
   upload.single('avatar'),
   apiUserController.uploadAvatar
 );
+router.put('/restoreAvatar', auth.auth, apiUserController.restoreAvatar);
 
 module.exports = router;

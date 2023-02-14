@@ -175,6 +175,23 @@ async function uploadAvatar(req, res) {
   }
 }
 
+async function restoreAvatar(req, res) {
+  try {
+    const editedProfile = await Users.findByIdAndUpdate(
+      req.user.id,
+      {
+        profileEditedAt: Date.now(),
+        avatar: '',
+      },
+      { new: true }
+    );
+
+    if (editedProfile) res.send({ success: true, data: editedProfile });
+  } catch (error) {
+    res.status(400).send({ success: false, error: error });
+  }
+}
+
 module.exports = {
   addContact,
   editContact,
@@ -182,4 +199,5 @@ module.exports = {
   viewContacts,
   editProfile,
   uploadAvatar,
+  restoreAvatar,
 };
