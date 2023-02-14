@@ -152,7 +152,7 @@ async function validateToken(req, res, next) {
     if (!user.secretKey)
       return res.status(401).send({
         success: false,
-        message: 'Esse usuário não pediu para recuperar a senha.',
+        error: 'Esse usuário não pediu para recuperar a senha.',
       });
 
     const validate = speakeasy.totp.verify({
@@ -166,7 +166,7 @@ async function validateToken(req, res, next) {
     if (!validate)
       return res.status(401).send({
         success: false,
-        message: 'Token inválido!',
+        error: 'Token inválido!',
       });
 
     if (path === '/validateToken') res.status(200).send({ success: true });
