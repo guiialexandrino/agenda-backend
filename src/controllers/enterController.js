@@ -196,7 +196,11 @@ async function newPassword(req, res) {
 
     return res
       .status(200)
-      .send({ success: true, message: 'Senha alterada!', user: editedUser });
+      .send({
+        success: true,
+        message: 'Sua senha foi alterada com sucesso!',
+        user: editedUser,
+      });
   } catch (error) {
     res.status(400).send({ success: false, error: error });
   }
