@@ -115,12 +115,12 @@ async function lostPassword(req, res) {
 
     if (sendEmail.accepted.length === 0)
       return res.status(400).send({
-        sucess: false,
-        message: 'Não foi possível enviar o email para recuperar a senha.',
+        success: false,
+        error: 'Não foi possível enviar o email para recuperar a senha.',
       });
 
     return res.status(200).send({
-      sucess: true,
+      success: true,
       message: 'Email para recuperar a senha foi enviado.',
     });
   } catch (error) {
