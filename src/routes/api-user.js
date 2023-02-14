@@ -4,6 +4,7 @@ const apiUserController = require('../controllers/apiController');
 const auth = require('../controllers/authController');
 const upload = require('../utils/multer');
 
+router.get('/verifyAuthToken', auth.auth);
 router.get('/viewContacts', auth.auth, apiUserController.viewContacts);
 router.post('/addContact', auth.auth, apiUserController.addContact);
 router.put('/editContact/:id', auth.auth, apiUserController.editContact);
