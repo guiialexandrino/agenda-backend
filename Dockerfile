@@ -1,5 +1,5 @@
 FROM node:18-alpine
-WORKDIR /agenda
+WORKDIR /agenda-back
 COPY package*.json ./
 RUN yarn
 COPY . .
