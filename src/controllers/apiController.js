@@ -2,6 +2,8 @@ const Contacts = require('../models/Contacts');
 const Users = require('../models/User');
 const bcrypt = require('bcryptjs');
 const Validation = require('./validation/api');
+const fs = require('fs');
+const path = require('node:path');
 
 //show Contacts by logged User
 async function viewContacts(req, res) {
@@ -159,6 +161,24 @@ async function uploadAvatar(req, res) {
     return res.status(400).send({ success: false, message: req.denied });
 
   try {
+    const user = await Users.findOne({
+      _id: req.user.id,
+    });
+
+    if (user.avatar) {
+      const pathOldAvatar = path.resolve(
+        __dirname,
+        '..',
+        'uploads',
+        user.avatar
+      );
+      fs.unlink(pathOldAvatar, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+
     const imagePath = req.file?.filename; //só vai acessar o .filename caso exista
     const editedProfile = await Users.findByIdAndUpdate(
       req.user.id,
@@ -177,6 +197,24 @@ async function uploadAvatar(req, res) {
 
 async function restoreAvatar(req, res) {
   try {
+    const user = await Users.findOne({
+      _id: req.user.id,
+    });
+
+    if (user.avatar) {
+      const pathOldAvatar = path.resolve(
+        __dirname,
+        '..',
+        'uploads',
+        user.avatar
+      );
+      fs.unlink(pathOldAvatar, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+
     const editedProfile = await Users.findByIdAndUpdate(
       req.user.id,
       {
